@@ -1,0 +1,19 @@
+{
+  "name": "bookreviewer",
+  "version": "1.0.0",
+  "description": "app for books and book reviews",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "books",
+    "reviews"
+  ],
+  "author": "MD & JM",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
