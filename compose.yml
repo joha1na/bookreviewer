@@ -6,6 +6,7 @@ services:
          - ./nginx/nginx.conf:/etc/nginx/nginx.conf
          - ./nginx/templates:/etc/nginx/templates
          - ./container_logs/nginx:/var/log/nginx
+         - ./public_html:/usr/share/nginx/html/doc # Neues Volume-Mapping für public_html
 #          - ./secrets/nginx:/etc/ssl
      ports:
          - "80:80"
