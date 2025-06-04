@@ -1,0 +1,12 @@
+<h1>{{book.title}}</h1>
+<p>Autor: {{book.author}}</p>
+<p>Bewertung: {{book.rating}}</p>
+
+<h2>Rezensionen</h2>
+<ul>
+  {{#each book.reviews}}
+    <li>
+      <strong>{{user}}:</strong> {{comment}} ({{likes}} Likes)
+    </li>
+  {{/each}}
+</ul>

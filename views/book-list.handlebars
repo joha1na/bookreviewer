@@ -1,0 +1,8 @@
+<h1>Alle Bücher</h1>
+<ul>
+  {{#each books}}
+    <li>
+      <a href="/book/{{id}}">{{title}}</a> von {{author}} – Bewertung: {{rating}}
+    </li>
+  {{/each}}
+</ul>
