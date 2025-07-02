@@ -8,7 +8,7 @@ export interface Review {
 }
 
 export interface Book {
-  id: number
+  _id: string // MongoDB ObjectId als string
   title: string
   author: string
   rating: number
@@ -17,16 +17,36 @@ export interface Book {
   publishedYear?: number
   genre?: string[]
   isbn?: string
+  reviewCount?: number // Virtual property
+  averageReviewRating?: number // Virtual property
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 // API Response Types
 export interface BooksResponse {
-  books: Book[]
-  total: number
+  status: 'success' | 'error'
+  data?: {
+    books: Book[]
+    pagination: {
+      currentPage: number
+      totalPages: number
+      totalBooks: number
+      hasNextPage: boolean
+      hasPrevPage: boolean
+    }
+  }
+  message?: string
+  error?: string | string[]
 }
 
 export interface BookResponse {
-  book: Book | null
+  status: 'success' | 'error'
+  data?: {
+    book: Book
+  }
+  message?: string
+  error?: string | string[]
 }
 
 // Error Types
