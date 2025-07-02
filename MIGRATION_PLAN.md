@@ -36,15 +36,17 @@ nginx/               → Reverse Proxy Config
 **Geschätzte Zeit:** 1-2 Stunden
 
 #### 1.1 Git Repository vorbereiten
-- [ ] Neue Branch `feature/nextjs-migration` erstellen
-- [ ] Aktuellen Stand committen und taggen als `v1.0-express`
-- [ ] `.gitignore` für Next.js vorbereiten
+
+- [x] Neue Branch `feature/nextjs-migration` erstellen
+- [x] Aktuellen Stand committen und taggen als `v1.0-express`
+- [x] `.gitignore` für Next.js vorbereiten
 
 #### 1.2 Next.js Projekt initialisieren
-- [ ] Next.js 14+ mit TypeScript installieren
-- [ ] App Router Struktur erstellen
-- [ ] Basis-Konfiguration (`next.config.js`, `tsconfig.json`)
-- [ ] Entwicklungsserver testen
+
+- [x] Next.js 14+ mit TypeScript installieren
+- [x] App Router Struktur erstellen
+- [x] Basis-Konfiguration (`next.config.js`, `tsconfig.json`)
+- [x] Entwicklungsserver testen
 
 **Deliverables:**
 - Funktionierende Next.js Basis-Installation
@@ -222,7 +224,7 @@ nginx/               → Reverse Proxy Config
 
 | Phase | Status | Start | Ende | Notizen |
 |-------|--------|-------|------|---------|
-| Phase 1 | 🟡 Geplant | - | - | Setup und Vorbereitung |
+| Phase 1 | ✅ Abgeschlossen | 2. Juli 2025 | 2. Juli 2025 | Git Branch + Next.js Setup |
 | Phase 2 | ⚪ Ausstehend | - | - | Core Migration |
 | Phase 3 | ⚪ Ausstehend | - | - | API & Data |
 | Phase 4 | ⚪ Ausstehend | - | - | Styling |
