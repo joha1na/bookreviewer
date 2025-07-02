@@ -39,6 +39,17 @@ app.get('/book/:id', (req, res) => {
   res.render('book-detail', { book });
 });
 
+// 404-Handler für nicht gefundene Seiten
+app.use((req, res, next) => {
+  res.status(404).send('Seite nicht gefunden');
+});
+
+// Globaler Fehler-Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Interner Serverfehler');
+});
+
 // Server starten
 app.listen(PORT, () => {
   console.log(`✅ Server läuft unter http://localhost:${PORT}`);
