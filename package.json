@@ -1,38 +1,27 @@
 {
-<<<<<<< HEAD
-  "name": "bookreviewer",
-  "version": "1.0.0",
-  "description": "app for books and book reviews",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "books",
-    "reviews"
-  ],
-  "author": "MD & JM",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^5.1.0"
-  }
-}
-=======
   "name": "bookreviewer-lab03",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "legacy:start": "node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^24.0.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "express": "^5.1.0",
-    "express-handlebars": "^8.0.3"
+    "express-handlebars": "^8.0.3",
+    "next": "^15.3.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.3"
   }
 }
-
->>>>>>> 1bd59f9 (Add lab03 implementation with Express and Handlebars)
