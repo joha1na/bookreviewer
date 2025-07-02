@@ -34,11 +34,35 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - MONGODB_URI=mongodb://mongodb:27017/bookreviewer-dev
     command: sh -c "npm install && npm run dev"
     restart: unless-stopped
+    depends_on:
+      - mongodb
+    networks:
+      - bookreviewer
+
+  # MongoDB für Development
+  mongodb:
+    image: mongo:7
+    container_name: bookreviewer_mongodb_dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=bookreviewer-dev
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongodb-init:/docker-entrypoint-initdb.d
     networks:
       - bookreviewer
 
 networks:
   bookreviewer:
     driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
