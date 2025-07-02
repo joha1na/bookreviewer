@@ -7,6 +7,9 @@ const nextConfig = {
   // Basis Konfiguration
   reactStrictMode: true,
   
+  // Output für Docker Production Build
+  output: 'standalone',
+  
   // Image Optimization
   images: {
     domains: [],

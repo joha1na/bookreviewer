@@ -1,33 +1,47 @@
+# Production Docker Compose
+# Für Development siehe compose.dev.yml
+
 services:
   nginx:
-     image: nginx:latest
-     container_name: reverse_proxy
-     volumes:
-         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-         - ./nginx/templates:/etc/nginx/templates
-         - ./container_logs/nginx:/var/log/nginx
-         - ./public_html:/usr/share/nginx/html # Neues Volume-Mapping für public_html
-#          - ./secrets/nginx:/etc/ssl
-     ports:
-         - "8080:80"
-#         - "443:443"
-     environment:
-        - NGINX_PORT=80
-        - NGINX_PROXY=http://application:3000
-#        - NGINX_CERT_DIR=/etc/ssl
-#        - NGINX_SSL_PORT=443
-#        - NGINX_ENTRYPOINT_QUIET_LOGS=1
-     depends_on:
-         - application
-     restart: always
+    image: nginx:latest
+    container_name: bookreviewer_nginx_prod
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/templates:/etc/nginx/templates
+      - ./container_logs/nginx:/var/log/nginx
+      - ./public_html:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_PORT=80
+      - NGINX_PROXY=http://application:3000
+    depends_on:
+      application:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - bookreviewer
 
   application:
-    image: bookreviewer
+    image: bookreviewer:latest
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./:/home/node/
-    command: "npm start"
+    container_name: bookreviewer_app_prod
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - bookreviewer
+    # Production: Kein Port-Expose (nur über nginx)
+
+networks:
+  bookreviewer:
+    driver: bridge

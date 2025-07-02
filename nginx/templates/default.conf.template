@@ -1,24 +1,88 @@
 server {
-        listen ${NGINX_PORT} default_server;
-        listen [::]:${NGINX_PORT} default_server;
-        server_name _;
-        location / {
-                proxy_pass ${NGINX_PROXY};
-                proxy_set_header  Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header  X-Forwarded-Proto $scheme;
-                proxy_set_header  X-Forwarded-Ssl on; # Optional
-                proxy_set_header  X-Forwarded-Port $server_port;
-                proxy_set_header  X-Forwarded-Host $host;
-        }
+    listen ${NGINX_PORT} default_server;
+    listen [::]:${NGINX_PORT} default_server;
+    server_name _;
     
-        # Location für /doc/ mit dem gemounteten Verzeichnis
-        location /doc {
-                root /usr/share/nginx/html;
-                index index.html;
-        }
+    # Gzip Compression für bessere Performance
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_types
+        text/plain
+        text/css
+        text/xml
+        text/javascript
+        application/javascript
+        application/xml+rss
+        application/json;
 
-        # root /var/www/html;
-        # index index.html;
+    # Security Headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+
+    # Proxy zur Next.js App
+    location / {
+        proxy_pass ${NGINX_PROXY};
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Ssl on;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Timeouts für Next.js
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Optimierte Caching für Next.js Static Assets
+    location /_next/static/ {
+        proxy_pass ${NGINX_PROXY};
+        proxy_set_header Host $host;
+        
+        # Cache für 1 Jahr da Next.js Hashes verwendet
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Caching für API Routes
+    location /api/ {
+        proxy_pass ${NGINX_PROXY};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Keine Cache für API Routes
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header Pragma "no-cache" always;
+        add_header Expires "0" always;
+    }
+
+    # Dokumentation (falls vorhanden)
+    location /doc {
+        root /usr/share/nginx/html;
+        index index.html;
+        
+        # Cache für Dokumentation
+        expires 1h;
+        add_header Cache-Control "public";
+    }
+
+    # Health Check Endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
 }
