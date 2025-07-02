@@ -11,7 +11,7 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Statische Dateien bereitstellen
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public_html')));
 
 // Beispiel-Daten
 const books = [
