@@ -1,57 +1,74 @@
 import { notFound } from 'next/navigation'
-
-// Temporäre Daten (werden später durch API ersetzt)
-const books = [
-  { 
-    id: 1, 
-    title: 'Der kleine Prinz', 
-    author: 'Antoine de Saint-Exupéry', 
-    rating: 4.8, 
-    reviews: [
-      { user: 'Anna', comment: 'Wundervoll!', likes: 5 },
-      { user: 'Tom', comment: 'Sehr tiefgründig', likes: 2 }
-    ] 
-  },
-  { 
-    id: 2, 
-    title: 'Harry Potter', 
-    author: 'J.K. Rowling', 
-    rating: 4.5, 
-    reviews: [
-      { user: 'Hermine', comment: 'Magisch!', likes: 10 },
-      { user: 'Ron', comment: 'Spannend bis zum Schluss', likes: 7 }
-    ] 
-  }
-]
+import Link from 'next/link'
+import ReviewList from '@/components/ReviewList'
+import { getBookById } from '@/lib/books-data'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default function BookDetailPage({ params }: Props) {
-  const id = parseInt(params.id, 10)
-  const book = books.find(b => b.id === id)
+export default async function BookDetailPage({ params }: Props) {
+  const resolvedParams = await params
+  const id = parseInt(resolvedParams.id, 10)
+  const book = getBookById(id)
 
   if (!book) {
     notFound()
   }
 
   return (
-    <div>
-      <h1>{book.title}</h1>
-      <p>Autor: {book.author}</p>
-      <p>Bewertung: {book.rating}</p>
+    <div className="book-detail">
+      <div className="book-header">
+        <Link href="/books" className="back-link">
+          ← Zurück zur Bücherliste
+        </Link>
+        
+        <div className="book-info">
+          <h1>{book.title}</h1>
+          <h2 className="author">von {book.author}</h2>
+          
+          <div className="book-meta">
+            <div className="rating">
+              <span className="rating-value">⭐ {book.rating}</span>
+              <span className="review-count">
+                ({book.reviews.length} Rezension{book.reviews.length !== 1 ? 'en' : ''})
+              </span>
+            </div>
+            
+            {book.publishedYear && (
+              <p className="published">Erschienen: {book.publishedYear}</p>
+            )}
+            
+            {book.isbn && (
+              <p className="isbn">ISBN: {book.isbn}</p>
+            )}
+          </div>
 
-      <h2>Rezensionen</h2>
-      <ul>
-        {book.reviews.map((review, index) => (
-          <li key={index}>
-            <strong>{review.user}:</strong> {review.comment} ({review.likes} Likes)
-          </li>
-        ))}
-      </ul>
+          {book.description && (
+            <div className="description">
+              <h3>Beschreibung</h3>
+              <p>{book.description}</p>
+            </div>
+          )}
+
+          {book.genre && book.genre.length > 0 && (
+            <div className="genres">
+              <h3>Genres</h3>
+              <div className="genre-list">
+                {book.genre.map((genre, index) => (
+                  <span key={index} className="genre-tag">
+                    {genre}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <ReviewList reviews={book.reviews} />
     </div>
   )
 }

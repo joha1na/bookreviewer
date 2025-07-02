@@ -1,42 +1,26 @@
-import Link from 'next/link'
-
-// Temporäre Daten (werden später durch API ersetzt)
-const books = [
-  { 
-    id: 1, 
-    title: 'Der kleine Prinz', 
-    author: 'Antoine de Saint-Exupéry', 
-    rating: 4.8, 
-    reviews: [
-      { user: 'Anna', comment: 'Wundervoll!', likes: 5 },
-      { user: 'Tom', comment: 'Sehr tiefgründig', likes: 2 }
-    ] 
-  },
-  { 
-    id: 2, 
-    title: 'Harry Potter', 
-    author: 'J.K. Rowling', 
-    rating: 4.5, 
-    reviews: [
-      { user: 'Hermine', comment: 'Magisch!', likes: 10 },
-      { user: 'Ron', comment: 'Spannend bis zum Schluss', likes: 7 }
-    ] 
-  }
-]
+import BookCard from '@/components/BookCard'
+import { getAllBooks, getBookStats } from '@/lib/books-data'
 
 export default function BooksPage() {
+  const books = getAllBooks()
+  const stats = getBookStats()
+
   return (
     <div>
-      <h1>Alle Bücher</h1>
-      <ul>
+      <div className="page-header">
+        <h1>Alle Bücher</h1>
+        <div className="stats">
+          <span>{stats.totalBooks} Bücher</span>
+          <span>{stats.totalReviews} Rezensionen</span>
+          <span>⌀ {stats.averageRating} ⭐</span>
+        </div>
+      </div>
+      
+      <div className="books-grid">
         {books.map((book) => (
-          <li key={book.id}>
-            <Link href={`/book/${book.id}`}>
-              {book.title}
-            </Link> von {book.author} – Bewertung: {book.rating}
-          </li>
+          <BookCard key={book.id} book={book} />
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

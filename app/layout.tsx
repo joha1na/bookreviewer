@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import Navigation from '@/components/Navigation'
 
 export const metadata: Metadata = {
   title: 'Book Reviewer',
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body>
+        <Navigation />
         <main className="container">
           {children}
         </main>
