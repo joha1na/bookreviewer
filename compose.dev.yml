@@ -1,0 +1,67 @@
+# Development Docker Compose
+# Verwendung: docker-compose -f compose.dev.yml up
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: bookreviewer_nginx_dev
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/templates:/etc/nginx/templates
+      - ./container_logs/nginx:/var/log/nginx
+      - ./public_html:/usr/share/nginx/html
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_PORT=80
+      - NGINX_PROXY=http://app:3000
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - bookreviewer
+
+  # Next.js App für Development mit Hot Reload
+  app:
+    image: node:20-alpine
+    container_name: bookreviewer_app_dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - CHOKIDAR_USEPOLLING=true
+      - MONGODB_URI=${MONGODB_URI}
+    command: sh -c "npm install && npm run dev"
+    restart: unless-stopped
+    depends_on:
+      - mongodb
+    networks:
+      - bookreviewer
+
+  # MongoDB für Development
+  mongodb:
+    image: mongo:7
+    container_name: bookreviewer_mongodb_dev
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DB_NAME}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - bookreviewer
+
+networks:
+  bookreviewer:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
