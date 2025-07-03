@@ -6,12 +6,13 @@ import { Types } from 'mongoose';
 // GET /api/books/[id]/reviews - Alle Rezensionen eines Buchs abrufen
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
     
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     
     // Validierung: ObjectId Format
     if (!Types.ObjectId.isValid(id)) {
@@ -46,7 +47,7 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error(`GET /api/books/${params.id}/reviews Error:`, error);
+    console.error(`GET /api/books/[id]/reviews Error:`, error);
     
     return NextResponse.json({
       status: 'error',
@@ -59,12 +60,13 @@ export async function GET(
 // POST /api/books/[id]/reviews - Neue Rezension hinzufügen
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
     
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     const body = await request.json();
     
     // Validierung: ObjectId Format
@@ -126,7 +128,7 @@ export async function POST(
     }, { status: 201 });
 
   } catch (error: any) {
-    console.error(`POST /api/books/${params.id}/reviews Error:`, error);
+    console.error(`POST /api/books/[id]/reviews Error:`, error);
     
     // Mongoose Validation Error
     if (error?.name === 'ValidationError') {

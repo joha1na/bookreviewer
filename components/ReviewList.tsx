@@ -1,21 +1,27 @@
-import { Review } from '@/types/book'
+import { SerializedReview } from '@/types/book'
 
 interface ReviewListProps {
-  reviews: Review[]
+  reviews: SerializedReview[]
 }
 
 interface ReviewItemProps {
-  review: Review
+  review: SerializedReview
 }
 
 function ReviewItem({ review }: ReviewItemProps) {
-  const formatDate = (date: Date | undefined) => {
+  const formatDate = (date: Date | string | undefined) => {
     if (!date) return ''
-    return new Intl.DateTimeFormat('de-DE', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    }).format(date)
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date
+      if (isNaN(dateObj.getTime())) return ''
+      return new Intl.DateTimeFormat('de-DE', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      }).format(dateObj)
+    } catch {
+      return ''
+    }
   }
 
   return (

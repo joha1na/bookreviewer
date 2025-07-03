@@ -6,12 +6,13 @@ import { Types } from 'mongoose';
 // GET /api/books/[id] - Einzelnes Buch abrufen
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
     
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     
     // Validierung: ObjectId Format
     if (!Types.ObjectId.isValid(id)) {
@@ -41,7 +42,7 @@ export async function GET(
     });
 
   } catch (error: any) {
-    console.error(`GET /api/books/${params.id} Error:`, error);
+    console.error(`GET /api/books/[id] Error:`, error);
     
     return NextResponse.json({
       status: 'error',
@@ -54,12 +55,13 @@ export async function GET(
 // PUT /api/books/[id] - Buch aktualisieren
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
     
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     const body = await request.json();
     
     // Validierung: ObjectId Format
@@ -118,7 +120,7 @@ export async function PUT(
     });
 
   } catch (error: any) {
-    console.error(`PUT /api/books/${params.id} Error:`, error);
+    console.error(`PUT /api/books/[id] Error:`, error);
     
     // Mongoose Validation Error
     if (error?.name === 'ValidationError') {
@@ -149,12 +151,13 @@ export async function PUT(
 // DELETE /api/books/[id] - Buch löschen
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectToDatabase();
     
-    const { id } = params;
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
     
     // Validierung: ObjectId Format
     if (!Types.ObjectId.isValid(id)) {
@@ -185,7 +188,7 @@ export async function DELETE(
     });
 
   } catch (error: any) {
-    console.error(`DELETE /api/books/${params.id} Error:`, error);
+    console.error(`DELETE /api/books/[id] Error:`, error);
     
     return NextResponse.json({
       status: 'error',

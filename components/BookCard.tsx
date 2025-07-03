@@ -1,14 +1,17 @@
 import Link from 'next/link'
-import { Book } from '@/types/book'
+import { SerializedBook } from '@/types/book'
 
 interface BookCardProps {
-  book: Book
+  book: SerializedBook
 }
 
 export default function BookCard({ book }: BookCardProps) {
+  // Support für sowohl _id (MongoDB) als auch id (Legacy)
+  const bookId = book._id || (book as any).id
+  
   return (
     <div className="book-card">
-      <Link href={`/book/${book.id}`} className="book-link">
+      <Link href={`/book/${bookId}`} className="book-link">
         <h3>{book.title}</h3>
       </Link>
       

@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 // Review Interface für Mongoose
 export interface IReview {
+  _id?: mongoose.Types.ObjectId;
   user: string;
   comment: string;
   likes: number;
