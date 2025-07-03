@@ -4,6 +4,10 @@ import Book from '@/models/Book'
 import { Suspense } from 'react'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { SerializedBook } from '@/types/book'
+import CreateBookButton from '@/components/CreateBookButton'
+
+// Force dynamic rendering für searchParams
+export const dynamic = 'force-dynamic'
 
 // Server Component - läuft auf dem Server und kann direkt auf MongoDB zugreifen
 export default async function BooksPage({
@@ -15,6 +19,7 @@ export default async function BooksPage({
     <div>
       <div className="page-header">
         <h1>Alle Bücher</h1>
+        <CreateBookButton />
         <Suspense fallback={<div>Loading stats...</div>}>
           <BookStats />
         </Suspense>

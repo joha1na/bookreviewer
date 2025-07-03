@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {
     // Optimierungen für bessere Performance
-    typedRoutes: true,
+    // typedRoutes: true, // Temporär deaktiviert für bessere Kompatibilität
   },
   // Basis Konfiguration
   reactStrictMode: true,

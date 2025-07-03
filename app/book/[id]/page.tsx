@@ -4,6 +4,8 @@ import { Suspense } from 'react'
 import { Types } from 'mongoose'
 import ReviewList from '@/components/ReviewList'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import DeleteButton from '@/components/DeleteButton'
+import ReviewForm from '@/components/ReviewForm'
 import connectToDatabase from '@/lib/mongodb'
 import Book from '@/models/Book'
 import { SerializedBook } from '@/types/book'
@@ -67,6 +69,13 @@ async function BookDetailContent({ id }: { id: string }) {
     return (
       <>
         <div className="book-info">
+          <div className="book-actions">
+            <Link href={`/books/${id}/edit` as any}>
+              <button className="edit-btn">✏️ Bearbeiten</button>
+            </Link>
+            <DeleteButton bookId={serializedBook._id} bookTitle={serializedBook.title} />
+          </div>
+          
           <h1>{serializedBook.title}</h1>
           <h2 className="author">von {serializedBook.author}</h2>
           
@@ -120,6 +129,7 @@ async function BookDetailContent({ id }: { id: string }) {
           )}
         </div>
 
+        <ReviewForm bookId={id} />
         <ReviewList reviews={serializedBook.reviews} />
       </>
     )
